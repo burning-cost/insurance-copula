@@ -1,6 +1,6 @@
-# insurance-vine-longitudinal
+# insurance-copula
 
-D-vine copula models for multi-year policyholder claim modelling.
+Copula models for insurance pricing — D-vine temporal dependence, two-part occurrence/severity.
 
 ## The problem
 
@@ -24,7 +24,7 @@ This is not a neural/sequence model. It does not replace your GLM. It operates o
 ## Installation
 
 ```bash
-pip install insurance-vine-longitudinal
+pip install insurance-copula
 ```
 
 ## Quick start
