@@ -2,6 +2,8 @@
 
 Copula models for insurance pricing — D-vine temporal dependence, two-part occurrence/severity.
 
+Merged from: `insurance-vine-longitudinal` (D-vine copula for panel data).
+
 ## The problem
 
 A policyholder who claimed last year is more likely to claim again next year. This is not just adverse selection — it is genuine claim persistence. Standard GLM pricing captures risk factors (age, vehicle type, region) but ignores temporal dependence in residuals. NCD scales encode a binary rule: claimed or didn't. Neither approach gives you a principled conditional distribution.
@@ -31,7 +33,7 @@ pip install insurance-copula
 
 ```python
 import pandas as pd
-from insurance_vine_longitudinal import PanelDataset, TwoPartDVine
+from insurance_copula.vine import PanelDataset, TwoPartDVine
 
 # Your panel data: one row per (policyholder, year)
 df = pd.read_parquet("motor_panel.parquet")
@@ -71,12 +73,18 @@ premium = model.predict_premium(history_df, loading=0.15)
 relativity = model.experience_relativity(history_df)
 ```
 
+Top-level imports also work:
+
+```python
+from insurance_copula import PanelDataset, TwoPartDVine, extract_relativity_curve
+```
+
 ## Relativity table
 
 The output pricing teams actually use: how does claim history shift the predicted premium relative to the a priori estimate?
 
 ```python
-from insurance_vine_longitudinal import extract_relativity_curve, compare_to_ncd
+from insurance_copula import extract_relativity_curve, compare_to_ncd
 
 curve = extract_relativity_curve(
     model,
