@@ -118,6 +118,23 @@ print(model.occurrence_vine.fit_result_.bic_by_level)
 
 Post PS21-5 (2022), renewal pricing must be fair. A D-vine model gives an auditable conditional distribution, separating genuine claim persistence (legitimate risk signal) from premium optimisation targeting (what the FCA is policing). The relativity table above is directly documentable.
 
+## Performance
+
+Benchmarked against NCD flat adjustment (Poisson GLM + fixed step function: 0 claims = 0.55×, 1 claim = 0.75×, 2+ claims = 1.30×) on a synthetic panel of 5,000 policyholders over 3 years with a known latent frailty DGP. Oracle predictions (exact Gamma-Poisson posterior) serve as an upper bound. Full notebook: `notebooks/benchmark.py`.
+
+| Metric | NCD Baseline | D-vine Copula | Oracle |
+|--------|-------------|---------------|--------|
+| Out-of-sample log-likelihood | lower | higher | highest |
+| Brier score | higher | lower | lowest |
+| MAE (predicted probability vs outcome) | higher | lower | lowest |
+| Recency sensitivity (year-1 vs year-2 claim) | none | captures it | captures it |
+
+The benchmark tests the core weakness of NCD: a policyholder who claimed in year 1 only receives the same multiplier as one who claimed in year 2 only, even though the DGP makes recency matter. The D-vine conditions on the full sequence and assigns higher probability to a recent claim. The notebook also reports calibration (A/E by NCD band) and the fraction of oracle improvement that the vine captures over NCD.
+
+**When to use:** You have a panel of 3+ years of policyholder history and want experience-rated renewal pricing that goes beyond NCD steps — particularly where claim recency, not just count, matters.
+
+**When NOT to use:** You have only one year of history per policyholder, or your book turns over too rapidly to build meaningful multi-year panels. The vine needs at least 2 prior years to condition on; with one year it reduces to a standard credibility adjustment.
+
 ## References
 
 Yang, L. & Czado, C. (2022). Two-part D-vine copula models for longitudinal insurance claim data. *Scandinavian Journal of Statistics*, 49(4), 1534–1561.
